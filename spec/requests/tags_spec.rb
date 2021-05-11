@@ -18,11 +18,19 @@ RSpec.describe '/tags', type: :request do
   # Tag. As you add validations to Tag, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    {
+      title: "A Title"
+    }
   end
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
+    {
+      not_a_title: "Not A Title"
+    }
+  end
+
+  before :each do
+    request.env["HTTP_ACCEPT"] = 'application/json'
   end
 
   describe 'GET /index' do
