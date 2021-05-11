@@ -1,0 +1,18 @@
+Style/Documentation:
+  Enabled: false
+
+Style/MixinUsage:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude: 
+    - 'spec/**/*'
+
+Metrics/LineLength:
+  Exclude: 
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'Gemfile'
+    - 'Rakefile'
+  Max: 100
+
