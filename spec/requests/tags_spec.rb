@@ -29,14 +29,14 @@ RSpec.describe '/tags', type: :request do
     }
   end
 
-  before :each do
-    request.env["HTTP_ACCEPT"] = 'application/json'
-  end
+  # before :each do
+  #   ENV["HTTP_ACCEPT"] = 'application/json'
+  # end
 
   describe 'GET /index' do
     it 'renders a successful response' do
       Tag.create! valid_attributes
-      get tags_url
+      get tags_url, headers: { accept: 'application/json' }, headers: { accept: 'application/json' }
       expect(response).to be_successful
     end
   end
@@ -44,7 +44,7 @@ RSpec.describe '/tags', type: :request do
   describe 'GET /show' do
     it 'renders a successful response' do
       tag = Tag.create! valid_attributes
-      get tag_url(tag)
+      get tag_url(tag), headers: { accept: 'application/json' }
       expect(response).to be_successful
     end
   end
@@ -52,7 +52,7 @@ RSpec.describe '/tags', type: :request do
   describe 'GET /edit' do
     it 'render a successful response' do
       tag = Tag.create! valid_attributes
-      get edit_tag_url(tag)
+      get edit_tag_url(tag), headers: { accept: 'application/json' }
       expect(response).to be_successful
     end
   end
@@ -61,26 +61,21 @@ RSpec.describe '/tags', type: :request do
     context 'with valid parameters' do
       it 'creates a new Tag' do
         expect do
-          post tags_url, params: { tag: valid_attributes }
+          post tags_url, params: { tag: valid_attributes }, headers: { accept: 'application/json' }
         end.to change(Tag, :count).by(1)
-      end
-
-      it 'redirects to the created tag' do
-        post tags_url, params: { tag: valid_attributes }
-        expect(response).to redirect_to(tag_url(Tag.last))
       end
     end
 
     context 'with invalid parameters' do
       it 'does not create a new Tag' do
         expect do
-          post tags_url, params: { tag: invalid_attributes }
+          post tags_url, params: { tag: invalid_attributes }, headers: { accept: 'application/json' }
         end.to change(Tag, :count).by(0)
       end
 
-      it "renders a successful response (i.e. to display the 'new' template)" do
-        post tags_url, params: { tag: invalid_attributes }
-        expect(response).to be_successful
+      it 'renders a unsuccessful response' do
+        post tags_url, params: { tag: invalid_attributes }, headers: { accept: 'application/json' }
+        expect(response).to have_http_status(:bad_request)
       end
     end
   end
@@ -88,29 +83,40 @@ RSpec.describe '/tags', type: :request do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        {
+          title: "A New Title"
+        }
       end
 
       it 'updates the requested tag' do
         tag = Tag.create! valid_attributes
-        patch tag_url(tag), params: { tag: new_attributes }
+        patch tag_url(tag), params: { tag: new_attributes }, headers: { accept: 'application/json' }
         tag.reload
-        skip('Add assertions for updated state')
+        expect(tag.title).to eq('A New Title')
       end
 
-      it 'redirects to the tag' do
+      it 'responds with the updated tag' do
         tag = Tag.create! valid_attributes
-        patch tag_url(tag), params: { tag: new_attributes }
-        tag.reload
-        expect(response).to redirect_to(tag_url(tag))
+        patch tag_url(tag), params: { tag: new_attributes }, headers: { accept: 'application/json' }
+        expect(response.body).to include('A New Title')
       end
     end
 
     context 'with invalid parameters' do
-      it "renders a successful response (i.e. to display the 'edit' template)" do
+      it 'does not update the tag' do
         tag = Tag.create! valid_attributes
-        patch tag_url(tag), params: { tag: invalid_attributes }
-        expect(response).to be_successful
+        original_title = tag.title
+
+        patch tag_url(tag), params: { tag: invalid_attributes }, headers: { accept: 'application/json' }
+        tag.reload
+
+        expect(tag.title).to eq(original_title)
+      end
+
+      it 'renders a unsuccessful response' do
+        tag = Tag.create! valid_attributes
+        patch tag_url(tag), params: { tag: invalid_attributes }, headers: { accept: 'application/json' }
+        expect(response).to have_http_status(:bad_request)
       end
     end
   end
@@ -119,14 +125,8 @@ RSpec.describe '/tags', type: :request do
     it 'destroys the requested tag' do
       tag = Tag.create! valid_attributes
       expect do
-        delete tag_url(tag)
+        delete tag_url(tag), headers: { accept: 'application/json' }
       end.to change(Tag, :count).by(-1)
-    end
-
-    it 'redirects to the tags list' do
-      tag = Tag.create! valid_attributes
-      delete tag_url(tag)
-      expect(response).to redirect_to(tags_url)
     end
   end
 end

@@ -19,13 +19,13 @@ class TagsController < ApplicationController
 
   # POST /tags or /tags.json
   def create
-    @tag = Tag.new(tag_params)
+    @tag = Tag.new(tag_params) if tag_params.present?
 
     respond_to do |format|
-      if @tag.save
+      if @tag&.save
         format.json { render json: @tag, status: :created, location: @tag }
       else
-        format.json { render json: @tag.errors, status: :unprocessable_entity }
+        format.json { render json: @tag&.errors, status: :bad_request }
       end
     end
   end
@@ -33,10 +33,10 @@ class TagsController < ApplicationController
   # PATCH/PUT /tags/1 or /tags/1.json
   def update
     respond_to do |format|
-      if @tag.update(tag_params)
+      if tag_params.present? && @tag.update(tag_params)
         format.json { render json: @tag, status: :ok, location: @tag }
       else
-        format.json { render json: @tag.errors, status: :unprocessable_entity }
+        format.json { render json: @tag.errors, status: :bad_request }
       end
     end
   end
