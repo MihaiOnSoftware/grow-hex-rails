@@ -4,6 +4,7 @@ Requirements:
 - [X] create/view/update Tasks
 - [X] create/view/update Tags
 - [ ] Tag a Task
+  - [ ] Refactor
 - [ ] create a Task with one or more Tags already linked
 - [ ] view all Tags on a Task
 - [ ] view all Tasks linked to a Tag
