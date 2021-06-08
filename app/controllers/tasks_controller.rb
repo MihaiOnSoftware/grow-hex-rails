@@ -27,10 +27,19 @@ class TasksController < ApplicationController
   # PATCH/PUT /tasks/1 or /tasks/1.json
   def update
     respond_to do |format|
-      if task_params.present? && @task.update(task_params)
-        format.json { render json: @task.as_json, status: :ok, location: @task }
-      else
+      if task_params.present?
+        if task_params.include?(:tags)
+          tag_titles = task_params[:tags]
+          tags = Tag.where(title: tag_titles)
+          @task.tags = tags
+        end
+        @task.assign_attributes(task_params.except(:tags))
+        @task.save
+      end
+      if task_params.empty? || @task.errors.present?
         format.json { render json: @task.errors, status: :bad_request }
+      else
+        format.json { render json: @task.as_json, status: :ok, location: @task }
       end
     end
   end
@@ -52,6 +61,6 @@ class TasksController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def task_params
-    params.require(:task).permit(%i[title tags])
+    params.require(:task).permit([:title, tags: []])
   end
 end

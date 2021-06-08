@@ -88,6 +88,14 @@ RSpec.describe '/tasks', type: :request do
         patch task_url(task), params: { task: new_attributes }, headers: { accept: 'application/json' }
         expect(response.body).to include('A New Title')
       end
+
+      it "adds a tag" do
+        task = Task.create! valid_attributes
+        tag = Tag.create!(title: "A Tag")
+        patch task_url(task), params: { task: { tags: [tag.title] } }, headers: { accept: 'application/json' }
+        task.reload
+        expect(task.tags).to include(tag)
+      end
     end
 
     context 'with invalid parameters' do
