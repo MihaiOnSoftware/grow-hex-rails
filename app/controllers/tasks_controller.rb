@@ -11,18 +11,15 @@ class TasksController < ApplicationController
   # GET /tasks/1 or /tasks/1.json
   def show; end
 
-  # GET /tasks/1/edit
-  def edit; end
-
   # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params)
+    @task = Task.new(task_params) if task_params.present?
 
     respond_to do |format|
-      if @task.save
+      if @task&.save
         format.json { render json: @task.as_json, status: :created, location: @task }
       else
-        format.json { render json: @task.errors, status: :unprocessable_entity }
+        format.json { render json: @task&.errors, status: :bad_request }
       end
     end
   end
@@ -30,10 +27,10 @@ class TasksController < ApplicationController
   # PATCH/PUT /tasks/1 or /tasks/1.json
   def update
     respond_to do |format|
-      if @task.update(task_params)
-        format.json { render :show, status: :ok, location: @task }
+      if task_params.present? && @task.update(task_params)
+        format.json { render json: @task.as_json, status: :ok, location: @task }
       else
-        format.json { render json: @task.errors, status: :unprocessable_entity }
+        format.json { render json: @task.errors, status: :bad_request }
       end
     end
   end

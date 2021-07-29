@@ -14,9 +14,6 @@ class TagsController < ApplicationController
   # GET /tags/1 or /tags/1.json
   def show; end
 
-  # GET /tags/1/edit
-  def edit; end
-
   # POST /tags or /tags.json
   def create
     @tag = Tag.new(tag_params) if tag_params.present?

@@ -29,14 +29,10 @@ RSpec.describe '/tags', type: :request do
     }
   end
 
-  # before :each do
-  #   ENV["HTTP_ACCEPT"] = 'application/json'
-  # end
-
   describe 'GET /index' do
     it 'renders a successful response' do
       Tag.create! valid_attributes
-      get tags_url, headers: { accept: 'application/json' }, headers: { accept: 'application/json' }
+      get tags_url, headers: { accept: 'application/json' }
       expect(response).to be_successful
     end
   end
@@ -45,14 +41,6 @@ RSpec.describe '/tags', type: :request do
     it 'renders a successful response' do
       tag = Tag.create! valid_attributes
       get tag_url(tag), headers: { accept: 'application/json' }
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'GET /edit' do
-    it 'render a successful response' do
-      tag = Tag.create! valid_attributes
-      get edit_tag_url(tag), headers: { accept: 'application/json' }
       expect(response).to be_successful
     end
   end
@@ -113,7 +101,7 @@ RSpec.describe '/tags', type: :request do
         expect(tag.title).to eq(original_title)
       end
 
-      it 'renders a unsuccessful response' do
+      it 'responds with a bad request' do
         tag = Tag.create! valid_attributes
         patch tag_url(tag), params: { tag: invalid_attributes }, headers: { accept: 'application/json' }
         expect(response).to have_http_status(:bad_request)

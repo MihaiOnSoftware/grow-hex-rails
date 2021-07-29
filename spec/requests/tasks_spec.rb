@@ -18,17 +18,21 @@ RSpec.describe '/tasks', type: :request do
   # Task. As you add validations to Task, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    {
+      title: "A Title"
+    }
   end
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
+    {
+      not_a_title: "Not A Title"
+    }
   end
 
   describe 'GET /index' do
     it 'renders a successful response' do
       Task.create! valid_attributes
-      get tasks_url
+      get tasks_url, headers: { accept: 'application/json' }
       expect(response).to be_successful
     end
   end
@@ -36,15 +40,7 @@ RSpec.describe '/tasks', type: :request do
   describe 'GET /show' do
     it 'renders a successful response' do
       task = Task.create! valid_attributes
-      get task_url(task)
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'GET /edit' do
-    it 'render a successful response' do
-      task = Task.create! valid_attributes
-      get edit_task_url(task)
+      get task_url(task), headers: { accept: 'application/json' }
       expect(response).to be_successful
     end
   end
@@ -53,26 +49,21 @@ RSpec.describe '/tasks', type: :request do
     context 'with valid parameters' do
       it 'creates a new Task' do
         expect do
-          post tasks_url, params: { task: valid_attributes }
+          post tasks_url, params: { task: valid_attributes }, headers: { accept: 'application/json' }
         end.to change(Task, :count).by(1)
-      end
-
-      it 'redirects to the created task' do
-        post tasks_url, params: { task: valid_attributes }
-        expect(response).to redirect_to(task_url(Task.last))
       end
     end
 
     context 'with invalid parameters' do
       it 'does not create a new Task' do
         expect do
-          post tasks_url, params: { task: invalid_attributes }
+          post tasks_url, params: { task: invalid_attributes }, headers: { accept: 'application/json' }
         end.to change(Task, :count).by(0)
       end
 
-      it "renders a successful response (i.e. to display the 'new' template)" do
-        post tasks_url, params: { task: invalid_attributes }
-        expect(response).to be_successful
+      it 'renders a unsuccessful response' do
+        post tasks_url, params: { task: invalid_attributes }, headers: { accept: 'application/json' }
+        expect(response).to have_http_status(:bad_request)
       end
     end
   end
@@ -80,29 +71,39 @@ RSpec.describe '/tasks', type: :request do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        {
+          title: "A New Title"
+        }
       end
 
       it 'updates the requested task' do
         task = Task.create! valid_attributes
-        patch task_url(task), params: { task: new_attributes }
+        patch task_url(task), params: { task: new_attributes }, headers: { accept: 'application/json' }
         task.reload
-        skip('Add assertions for updated state')
+        expect(task.title).to eq('A New Title')
       end
 
-      it 'redirects to the task' do
+      it 'responds with the updated task' do
         task = Task.create! valid_attributes
-        patch task_url(task), params: { task: new_attributes }
-        task.reload
-        expect(response).to redirect_to(task_url(task))
+        patch task_url(task), params: { task: new_attributes }, headers: { accept: 'application/json' }
+        expect(response.body).to include('A New Title')
       end
     end
 
     context 'with invalid parameters' do
-      it "renders a successful response (i.e. to display the 'edit' template)" do
+      it "does not update the task" do
         task = Task.create! valid_attributes
-        patch task_url(task), params: { task: invalid_attributes }
-        expect(response).to be_successful
+        original_title = task.title
+
+        patch task_url(task), params: { task: invalid_attributes }, headers: { accept: 'application/json' }
+        task.reload
+        expect(task.title).to eq(original_title)
+      end
+
+      it "responds with a bad request" do
+        task = Task.create! valid_attributes
+        patch task_url(task), params: { task: invalid_attributes }, headers: { accept: 'application/json' }
+        expect(response).to have_http_status(:bad_request)
       end
     end
   end
@@ -111,14 +112,8 @@ RSpec.describe '/tasks', type: :request do
     it 'destroys the requested task' do
       task = Task.create! valid_attributes
       expect do
-        delete task_url(task)
+        delete task_url(task), headers: { accept: 'application/json' }
       end.to change(Task, :count).by(-1)
-    end
-
-    it 'redirects to the tasks list' do
-      task = Task.create! valid_attributes
-      delete task_url(task)
-      expect(response).to redirect_to(tasks_url)
     end
   end
 end
