@@ -3,7 +3,7 @@
 Requirements:
 - [X] create/view/update Tasks
 - [X] create/view/update Tags
-- [ ] Tag a Task
+- [X] Tag a Task
   - [ ] Refactor
     - Add a new update
     - OR use callbacks
