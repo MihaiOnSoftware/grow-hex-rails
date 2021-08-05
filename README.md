@@ -4,7 +4,7 @@ Requirements:
 - [X] create/view/update Tasks
 - [X] create/view/update Tags
 - [X] Tag a Task
-  - [ ] Refactor
+  - [X] Refactor
     - Add a new update
     - OR use callbacks
 - [ ] create a Task with one or more Tags already linked
