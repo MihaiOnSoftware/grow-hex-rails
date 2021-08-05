@@ -43,4 +43,21 @@ RSpec.describe Task, type: :model do
       expect(modified_task.title).to eq(new_title)
     end
   end
+
+  describe "creating and tagging" do
+    let(:new_title) { "A New Test Title" }
+
+    it "creates with no tag" do
+      Task.create_and_tag({ title: new_title })
+      expect(Task.first.title).to eq(new_title)
+    end
+
+    it "creates with a tag" do
+      Task.create_and_tag({ title: new_title, tags: [tag.title] })
+
+      created_task = Task.first
+      expect(created_task.tags).to include(tag)
+      expect(created_task.title).to eq(new_title)
+    end
+  end
 end
