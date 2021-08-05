@@ -10,13 +10,8 @@ class Task < ApplicationRecord
     end
   end
 
-  def tag(*titles)
-    new_tags = Tag.where(title: titles)
-    tags << new_tags
-  end
-
   def update_and_tag(tags: [], **args)
-    tag(tags)
-    update(args)
+    new_tags = Tag.where(title: tags)
+    update(tags: new_tags, **args)
   end
 end

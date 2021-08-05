@@ -6,22 +6,6 @@ RSpec.describe Task, type: :model do
   let(:tag) { Tag.create(title: "A Tag") }
   let(:task) { Task.create(title: "A Task") }
 
-  it "tags a task" do
-    task.tags << tag
-    expect(Task.first.tags).to include(tag)
-  end
-
-  it "tags with a string" do
-    task.tag(tag.title)
-    expect(Task.first.tags).to include(tag)
-  end
-
-  it "adds multiple tags" do
-    tag2 = Tag.create(title: "Another Tag")
-    task.tag(tag.title, tag2.title)
-    expect(Task.first.tags).to include(tag, tag2)
-  end
-
   describe "updating and tagging" do
     let(:new_title) { "A New Test Title" }
 
