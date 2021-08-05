@@ -52,6 +52,12 @@ RSpec.describe '/tasks', type: :request do
           post tasks_url, params: { task: valid_attributes }, headers: { accept: 'application/json' }
         end.to change(Task, :count).by(1)
       end
+
+      it "adds a tag" do
+        tag = Tag.create!(title: "A Tag")
+        post tasks_url, params: { task: valid_attributes.merge(tags: [tag.title]) }, headers: { accept: 'application/json' }
+        expect(Task.first.tags).to include(tag)
+      end
     end
 
     context 'with invalid parameters' do

@@ -13,10 +13,8 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params) if task_params.present?
-
     respond_to do |format|
-      if @task&.save
+      if task_params.present? && (@task = Task.create_and_tag(task_params_hash))
         format.json { render json: @task.as_json, status: :created, location: @task }
       else
         render_error(format)
