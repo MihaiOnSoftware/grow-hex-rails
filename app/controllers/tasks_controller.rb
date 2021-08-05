@@ -19,7 +19,7 @@ class TasksController < ApplicationController
       if @task&.save
         format.json { render json: @task.as_json, status: :created, location: @task }
       else
-        format.json { render json: @task&.errors, status: :bad_request }
+        render_error(format)
       end
     end
   end
@@ -27,13 +27,11 @@ class TasksController < ApplicationController
   # PATCH/PUT /tasks/1 or /tasks/1.json
   def update
     respond_to do |format|
-      if task_params.present?
-        @task.update_and_tag(**task_params.to_h.symbolize_keys)
-      end
-      if task_params.empty? || @task.errors.present?
-        format.json { render json: @task.errors, status: :bad_request }
+      if task_params.empty?
+        render_error(format)
       else
-        format.json { render json: @task.as_json, status: :ok, location: @task }
+        @task.update_and_tag(**task_params_hash)
+        render_updated_task(format)
       end
     end
   end
@@ -47,6 +45,22 @@ class TasksController < ApplicationController
   end
 
   private
+
+  def render_updated_task(format)
+    if @task.errors.present?
+      render_error(format)
+    else
+      format.json { render json: @task.as_json, status: :ok, location: @task }
+    end
+  end
+
+  def render_error(format)
+    format.json { render json: @task&.errors, status: :bad_request }
+  end
+
+  def task_params_hash
+    task_params.to_h.symbolize_keys
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_task
