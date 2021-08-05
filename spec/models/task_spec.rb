@@ -40,11 +40,20 @@ RSpec.describe Task, type: :model do
       expect(Task.first.tags).to include(tag)
     end
 
+    it "just updates if there's no tag" do
+      task = Task.create(title: "A Task")
+      new_title = "A New Test Title"
+      task.update_and_tag({ title: new_title })
+
+      modified_task = Task.first
+      expect(modified_task.title).to eq(new_title)
+    end
+
     it "will both tag and update" do
       task = Task.create(title: "A Task")
       tag = Tag.create(title: "A Tag")
       new_title = "A New Test Title"
-      task.update_and_tag(title: new_title, tags: [tag.title])
+      task.update_and_tag({ title: new_title, tags: [tag.title] })
 
       modified_task = Task.first
       expect(modified_task.tags).to include(tag)

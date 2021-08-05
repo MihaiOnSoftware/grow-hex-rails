@@ -28,13 +28,7 @@ class TasksController < ApplicationController
   def update
     respond_to do |format|
       if task_params.present?
-        if task_params.include?(:tags)
-          tag_titles = task_params[:tags]
-          tags = Tag.where(title: tag_titles)
-          @task.tags = tags
-        end
-        @task.assign_attributes(task_params.except(:tags))
-        @task.save
+        @task.update_and_tag(**task_params.to_h.symbolize_keys)
       end
       if task_params.empty? || @task.errors.present?
         format.json { render json: @task.errors, status: :bad_request }

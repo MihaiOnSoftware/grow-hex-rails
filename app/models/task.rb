@@ -8,7 +8,7 @@ class Task < ApplicationRecord
     tags << new_tags
   end
 
-  def update_and_tag(tags:, **args)
+  def update_and_tag(tags: [], **args)
     tag(tags)
     update(args)
   end
