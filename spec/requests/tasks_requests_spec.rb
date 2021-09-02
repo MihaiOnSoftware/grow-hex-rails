@@ -39,6 +39,7 @@ RSpec.describe '/tasks', type: :request do
 
   describe 'GET /show' do
     let(:task) { Task.create! valid_attributes }
+
     it 'renders a successful response' do
       get task_url(task), headers: { accept: 'application/json' }
       expect(response).to be_successful
@@ -46,7 +47,20 @@ RSpec.describe '/tasks', type: :request do
 
     it 'returns a json with a task' do
       get task_url(task), headers: { accept: 'application/json' }
-      expect(JSON.parse(response.body)).to eq(task.attributes.slice("id", "title"))
+      expect(JSON.parse(response.body)).to eq(task.attributes.slice("id", "title").merge("tags" => []))
+    end
+
+    it 'includes tag titles in the json if available' do
+      tag = Tag.create!(title: 'A Tag')
+      task.tags << tag
+      tag2 = Tag.create!(title: 'Another Tag')
+      task.tags << tag2
+
+      get task_url(task), headers: { accept: 'application/json' }
+
+      task_attributes = task.attributes.slice("id", "title")
+      tag_titles = { "tags" => [{ "title" => tag.title }, { "title" => tag2.title }] }
+      expect(JSON.parse(response.body)).to eq(task_attributes.merge(tag_titles))
     end
   end
 
