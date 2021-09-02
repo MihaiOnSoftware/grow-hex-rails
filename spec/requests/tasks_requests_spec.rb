@@ -38,10 +38,15 @@ RSpec.describe '/tasks', type: :request do
   end
 
   describe 'GET /show' do
+    let(:task) { Task.create! valid_attributes }
     it 'renders a successful response' do
-      task = Task.create! valid_attributes
       get task_url(task), headers: { accept: 'application/json' }
       expect(response).to be_successful
+    end
+
+    it 'returns a json with a task' do
+      get task_url(task), headers: { accept: 'application/json' }
+      expect(JSON.parse(response.body)).to eq(task.attributes.slice("id", "title"))
     end
   end
 

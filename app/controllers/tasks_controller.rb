@@ -9,7 +9,11 @@ class TasksController < ApplicationController
   end
 
   # GET /tasks/1 or /tasks/1.json
-  def show; end
+  def show
+    respond_to do |format|
+      format.json { render json: @task.attributes.slice("id", "title"), location: @task }
+    end
+  end
 
   # POST /tasks or /tasks.json
   def create
