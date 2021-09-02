@@ -9,7 +9,7 @@ Requirements:
     - OR use callbacks
 - [X] create a Task with one or more Tags already linked
 - [X] view a Task
-- [ ] view a Tag
+- [X] view a Tag
 - [ ] view all Tags on a Task
 - [ ] view all Tasks linked to a Tag
 - [ ] Tag titles should be unique

@@ -38,10 +38,16 @@ RSpec.describe '/tags', type: :request do
   end
 
   describe 'GET /show' do
+    let(:tag) { Tag.create! valid_attributes }
+
     it 'renders a successful response' do
-      tag = Tag.create! valid_attributes
       get tag_url(tag), headers: { accept: 'application/json' }
       expect(response).to be_successful
+    end
+
+    it 'returns a json with a tag' do
+      get tag_url(tag), headers: { accept: 'application/json' }
+      expect(JSON.parse(response.body)).to eq(tag.attributes.slice('id', 'title'))
     end
   end
 

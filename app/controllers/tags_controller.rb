@@ -12,7 +12,11 @@ class TagsController < ApplicationController
   end
 
   # GET /tags/1 or /tags/1.json
-  def show; end
+  def show
+    respond_to do |format|
+      format.json { render json: @tag.attributes.slice("id", "title") }
+    end
+  end
 
   # POST /tags or /tags.json
   def create
