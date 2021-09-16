@@ -11,7 +11,7 @@ Requirements:
 - [X] view a Task
 - [X] view a Tag
 - [X] view all Tags on a Task
-- [ ] view all Tasks linked to a Tag
+- [X] view all Tasks linked to a Tag
 - [ ] Tag titles should be unique
 - [ ] Remove Tags linked to a Task
 - [ ] link multiple Tags to a Task

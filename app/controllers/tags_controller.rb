@@ -14,7 +14,8 @@ class TagsController < ApplicationController
   # GET /tags/1 or /tags/1.json
   def show
     respond_to do |format|
-      format.json { render json: @tag.attributes.slice("id", "title") }
+      task_json = @tag.as_json(only: [:id, :title], include: [tasks: { only: [:id, :title] }])
+      format.json { render json: task_json, location: @tag }
     end
   end
 

@@ -47,7 +47,20 @@ RSpec.describe '/tags', type: :request do
 
     it 'returns a json with a tag' do
       get tag_url(tag), headers: { accept: 'application/json' }
-      expect(JSON.parse(response.body)).to eq(tag.attributes.slice('id', 'title'))
+      expect(JSON.parse(response.body)).to eq(tag.attributes.slice('id', 'title').merge("tasks" => []))
+    end
+
+    it 'includes task titles in the json if available' do
+      task = Task.create!(title: 'A Task')
+      task2 = Task.create!(title: 'Another Task')
+      tag.tasks << [task, task2]
+
+      get tag_url(tag), headers: { accept: 'application/json' }
+
+      tag_attributes = tag.attributes.slice("id", "title")
+      tasks_attribute_array = [task, task2].map { |task| {"id" => task.id, "title" => task.title} }
+      tasks_attributes = { "tasks" => tasks_attribute_array }
+      expect(JSON.parse(response.body)).to eq(tag_attributes.merge(tasks_attributes))
     end
   end
 
