@@ -12,7 +12,7 @@ Requirements:
 - [X] view a Tag
 - [X] view all Tags on a Task
 - [X] view all Tasks linked to a Tag
-- [ ] Tag titles should be unique
+- [X] Tag titles should be unique
 - [ ] Remove Tags linked to a Task
 - [ ] link multiple Tags to a Task
 - [ ] link multiple Tasks to a Tag
