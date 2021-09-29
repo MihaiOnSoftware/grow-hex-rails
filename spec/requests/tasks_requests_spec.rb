@@ -121,6 +121,15 @@ RSpec.describe '/tasks', type: :request do
         task.reload
         expect(task.tags).to include(tag)
       end
+
+      it "removes a tag" do
+        tag = Tag.create!(title: "A Tag")
+        tag2 = Tag.create!(title: "Another Tag")
+        task = Task.create! valid_attributes.merge(tags: [tag, tag2])
+        patch task_url(task), params: { task: { tags: [tag] } }, headers: { accept: 'application/json' }
+        task.reload
+        expect(task.tags).not_to include(tag2)
+      end
     end
 
     context 'with invalid parameters' do
