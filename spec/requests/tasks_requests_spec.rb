@@ -129,6 +129,12 @@ RSpec.describe '/tasks', type: :request do
         task.reload
         expect(task.tags.to_a).to eq([tag])
       end
+
+      it "creates a new tag when the tag doesn't exist" do
+        tag_title = "A New Tag"
+        patch task_url(task), params: { task: { tags: [tag_title] } }, headers: { accept: 'application/json' }
+        expect(task.tags.first.title).to eq(tag_title)
+      end
     end
 
     context 'with invalid parameters' do

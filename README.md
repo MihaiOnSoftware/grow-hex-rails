@@ -16,4 +16,4 @@ Requirements:
 - [X] Remove Tags linked to a Task
 - [X] link multiple Tags to a Task
 - [X] link multiple Tasks to a Tag
-- [ ] Create a new Tag when tagging a Task
+- [X] Create a new Tag when tagging a Task
