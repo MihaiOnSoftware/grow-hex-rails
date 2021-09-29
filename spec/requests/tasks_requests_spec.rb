@@ -101,21 +101,20 @@ RSpec.describe '/tasks', type: :request do
         }
       end
 
+      let(:task) { Task.create! valid_attributes }
+
       it 'updates the requested task' do
-        task = Task.create! valid_attributes
         patch task_url(task), params: { task: new_attributes }, headers: { accept: 'application/json' }
         task.reload
         expect(task.title).to eq('A New Title')
       end
 
       it 'responds with the updated task' do
-        task = Task.create! valid_attributes
         patch task_url(task), params: { task: new_attributes }, headers: { accept: 'application/json' }
         expect(response.body).to include('A New Title')
       end
 
       it "adds a tag" do
-        task = Task.create! valid_attributes
         tag = Tag.create!(title: "A Tag")
         patch task_url(task), params: { task: { tags: [tag.title] } }, headers: { accept: 'application/json' }
         task.reload
@@ -126,9 +125,9 @@ RSpec.describe '/tasks', type: :request do
         tag = Tag.create!(title: "A Tag")
         tag2 = Tag.create!(title: "Another Tag")
         task = Task.create! valid_attributes.merge(tags: [tag, tag2])
-        patch task_url(task), params: { task: { tags: [tag] } }, headers: { accept: 'application/json' }
+        patch task_url(task), params: { task: { tags: [tag.title] } }, headers: { accept: 'application/json' }
         task.reload
-        expect(task.tags).not_to include(tag2)
+        expect(task.tags.to_a).to eq([tag])
       end
     end
 
